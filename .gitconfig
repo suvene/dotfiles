@@ -1,0 +1,47 @@
+[user]
+  name = suVene
+  email = suvene@zeromemory.info
+[core]
+  whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+#  excludesfile = ~/.gitignore
+[color]
+  ui = true
+  branch = auto
+  diff = auto
+  status = auto
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+[gui]
+  encoding = utf-8
+[branch]
+  autosetupmerge = true
+[alias]
+  br = branch
+  co = checkout
+  ci = commit -a
+  df = diff
+  lg = log -p
+  me = merge
+  st = status
+  df2 = log -p HEAD@{2.days.ago}
+  plr = pull --rebase
+[github]
+  user = suVene
+  token = --hidden-git-token--
+[pull]
+	rebase = true
+[tig "bind"]
+  generic = g move-first-line
+  generic = G move-last-line
+

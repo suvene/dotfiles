@@ -1,0 +1,311 @@
+" suVene .vimperatorrc
+" for HEAD (created: 2011/02/17)
+
+set runtimepath=~/.vimperator
+
+echo "loding"
+
+" pre                                                                        {{{
+" cf. http://vimperator.g.hatena.ne.jp/nokturnalmortum/20100225/1267041594
+command! -nargs=+ lazy autocmd VimperatorEnter .* <args>
+" }}}
+
+" for browser {{{
+" disable extensions version check
+set! extensions.checkCompatibility.3.6=false
+set! extensions.checkCompatibility.4.0=false
+set! extensions.checkCompatibility.4.0a=false
+set! extensions.checkCompatibility.4.0b=false
+set! extensions.checkCompatibility.4.0b8=false
+set! extensions.checkCompatibility.4.0b=false
+
+" 単語選択時の右側のスペース選択を行わない
+set! layout.word_select.eat_space_to_next_word=false
+
+" ポップアップ許可数を拡張 cf.http://la.ma.la/blog/diary_200611171115.htm
+set! dom.popup_maximum=100
+
+" liberator.log
+set! extensions.liberator.loglevel=666
+
+" アドオン/プラグイン開発用
+set! javascript.options.strict=true
+set! javascript.options.showInConsole=true
+set! browser.dom.window.dump.enabled=true
+" /*}}}*/
+
+" Options {{{
+""""""""""""""""""""""""""""""""""""""""""
+" Speed up first time history/bookmark completion
+"set preload=*
+
+" タブバーを常に表示
+" set stal=2
+
+"
+set verbose=5
+
+" visualbell有効
+set visualbell
+"set visualbellstyle+= opacity:.5;
+
+" ex mode increment
+"set wildoptions=auto
+
+" :[tab]open コマンドで補完する候補と順番
+set complete=sl
+
+"
+set hintchars=asdfjkl;
+
+" テキストエディタ
+"set editor="gvim -f"
+set editor='/opt/local/bin/mvim -f'
+
+" ページロード時にテキストボックスにフォーカスが入らないように
+set focuscontent
+" ]]
+set nextpattern+=次(の)?ページ,→\b,
+" [[
+set previouspattern+=前(の)?ページ,\b←
+
+"
+autocmd LocationChange .* :js modes.passAllKeys = /^https?:\/\/(?:www\.)?rememberthemilk\.com/.test(buffer.URL)
+autocmd LocationChange .* :js modes.passAllKeys = /^https?:\/\/mail\.google\.com/.test(buffer.URL)
+autocmd LocationChange .* :js modes.passAllKeys = /^https?:\/\/(?:www\.)?google(\.com|\.co\.jp)\/reader/.test(buffer.URL)
+
+hi Hint z-index:5000; font-family:Menlo; font-size:11px; color:white; background-color:red; border-color:ButtonShadow; border-width:0px; border-style:solid; padding:0px 2px 0px 2px; position:absolute;
+
+" vimperatorのコマンドライン時はimeをOFFにする
+" http://vimperator.g.hatena.ne.jp/teramako/20090311/1236776437
+:style -name commandline-ime chrome://* #liberator-commandline-command input {ime-mode: inactive;}
+" }}}
+
+" Mappings/*{{{*/
+""""""""""""""""""""""""""""""""""""""""""
+" ; 
+noremap ; :
+noremap : ;
+
+" scroll
+map j 3<C-e>
+map k 3<C-y>
+map J <C-d>
+map K <C-u>
+" tab
+map h <C-p><Esc>
+map l <C-n><Esc>
+
+" http://unsigned.g.hatena.ne.jp/Trapezoid/20080620/1213961754
+javascript <<EOM
+[
+  ['!', ':set invum'],
+  ['<S-Right>', ':tablast'],
+  ['<S-Left>', ':tabfirst'],
+  ['<C-L>', ':tabmove! +1'],
+  ['<C-H>', ':tabmove! -1'],
+  ['<A-b>', ':set guioptions+=b'],
+  ['<A-B>', ':set guioptions-=b'],
+  ['<A-t>', ':set guioptions+=T'],
+  ['<A-T>', ':set guioptions-=T'],
+  [',b', ':bentry'],
+  [',c', ':copy'],
+  [',s1', ':so ~/vimperator/plugin/_libly.js'],
+  [',s2', ':so ~/vimperator/plugin/multi_requester.js'],
+  [',s3', ':so ~/vimperator/plugin/notifier.js'],
+  [',s4', ':so ~/vimperator/plugin/nextlink.js'],
+  [',v', ':viewSBMComments'],
+  [',ns', ':notifierstart'],
+  [',nr', ':notifierrestart'],
+  [',nq', ':notifierstop'],
+].forEach(function([key, command]){
+  mappings.addUserMap([modes.NORMAL], [key],
+      "User defined mapping",
+      function () { liberator.execute(command); },
+      {
+          rhs: command,
+          noremap: true
+      });
+});
+EOM
+
+" ex mode
+cnoremap <C-a> <C-v><C-a>
+cnoremap <C-z> <C-v><C-z>
+cnoremap <C-x> <C-v><C-x>
+cnoremap <C-c> <C-v><C-c>
+cnoremap <C-v> <C-v><C-v>
+cmap <C-b> <Left>
+cmap <C-f> <Right>
+cmap <C-p> <Up>
+cmap <C-n> <Down>
+
+" edit
+inoremap <C-a> <C-v><C-a>
+inoremap <C-z> <C-v><C-z>
+inoremap <C-x> <C-v><C-x>
+inoremap <C-c> <C-v><C-c>
+inoremap <C-v> <C-v><C-v>
+imap <C-b> <Left>
+imap <C-f> <Right>
+imap <C-p> <Up>
+imap <C-n> <Down>
+" }}}
+
+" for plugins {{{
+""""""""""""""""""""""""""""""""
+" pluginloader
+javascript <<EOM
+  liberator.globalVariables.plugin_loader_roots = "~/dev/github/vimpr/vimperator-plugins"
+  liberator.globalVariables.plugin_loader_plugins = <>
+    _libly
+    auto_reload
+    auto_source
+    copy
+    direct_bookmark
+    feeder
+    multi_requester
+    unicode
+    pluginManager
+    sbmcommentsviewer
+    feedSomeKeys_3
+    x-hint
+    google-plus-commando
+  </>.toString().split(/\s+/).filter(function(n) !/^!/.test(n));
+EOM
+
+" direct_bookmark.js
+let g:direct_sbm_use_services_by_tag = "h"
+let g:direct_sbm_use_services_by_post = "h"
+
+" copy.js
+javascript <<EOM
+liberator.globalVariables.copy_templates = [
+  { label: 'titleAndURL',       value: '%TITLE% %URL%' },
+  { label: 'title',             value: '%TITLE%' },
+  { label: 'anchor',            value: '<a href=\"%URL%\" title=\"%TITLE%\">%TITLE%</a>' },
+  { label: 'anchorWithHatena',  value: '<a href=\"%URL%\" title=\"%TITLE%\">%TITLE%</a> <a href=\"http://b.hatena.ne.jp/entry/%URL%\" title=\"はてなブックマーク数\" alt=\"はてなブックマーク数\"><img src=\"http://b.hatena.ne.jp/entry/image/%URL%\" title=\"はてなブックマーク数\" alt=\"はてなブックマーク数\" border=\"0\"></a>' },
+  { label: 'htmlblockquote',    value: '<blockquote cite="%URL%" title="%TITLE%">%HTMLSEL%\n<a href=\"%URL%\" title=\"%TITLE%\">%TITLE%</a> <a href=\"http://b.hatena.ne.jp/entry/%URL%\" title=\"はてなブックマーク数\" alt=\"はてなブックマーク数\"><img src=\"http://b.hatena.ne.jp/entry/image/%URL%\" title=\"はてなブックマーク数\" alt=\"はてなブックマーク数\" border=\"0\"></a></blockquote>' },
+  { label: 'hatena',            value: '[%URL%:title=%TITLE%]' },
+  { label: 'hatenacite',        value: '>%URL%:title=%TITLE%>\n%SEL%\n<<' },
+  { label: 'markdown',          value: '[%SEL%](%URL% "%TITLE%")' },
+];
+EOM
+
+" multi_requester.js
+javascript <<EOM
+liberator.globalVariables.multi_requester_use_wedata = true;
+liberator.globalVariables.multi_requester_siteinfo = [
+    {
+        map:            ',ml',
+        name:           'lo',                             // required
+        description:    'local',                          // required
+        url:            'http://192.168.0.6/?%s',         // required, %s <-- replace string
+        xpath:          '//div[@class="resultList"]',     // optional(default all)
+        encode:         'SHIFT_JIS',                      // optional(default UTF-8)
+        ignoreTags:     'img',                            // optional(default script), syntax 'tag1,tag2,……'
+    },
+    {
+        map:            ',mj1',
+        bang:           true,
+        args:           'dummy',
+        name:           'ekikara-nagoya-kudari',
+        description:    'えきから時刻表 - 名古屋 [ＪＲ]東海道本線 岐阜方面(下り) 平日',
+        url:            'http://www.ekikara.jp/newdata/ekijikoku/2301031/down1_23105011.htm',
+        srcEncode:      'shift_jis',
+    },
+    {
+        map:            ',mh',
+        bang:           true,
+        args:           'dummy',
+        name:           'excite-english',
+        description:    '英語翻訳 - エキサイト 翻訳',
+        url:            'http://www.excite.co.jp/world/english/',
+        srcEncode:      'shift_jis',
+    },
+    {
+        name:           'test',
+        description:    'test',
+        url:            'http://weather.yahoo.co.jp/weather/jp/23/5110/23203/4930005.html',
+        xpath:          'id("cat-pass") | id("yjw_pinpoint_today") | id("yjw_pinpoint_tomorrow") | id("yjw_week")',
+        //xpath:          'id("cat-pass") |  id("yjw_pinpoint_today") ',
+        srcEncode:      'EUC-JP',
+    },
+];
+liberator.globalVariables.multi_requester_mappings = [
+    [',mt', 'lo', '', 'a'],
+    [',md', 'goo,alc,weblsd'],
+    [',mn', 'hatena-bookmarklist', '', 'http://zeromemory.sblo.jp'],
+    [',mr', 'wedata-multi-requester', '', ''],
+    [',mw1', 'weather-yahoo', '', '450-0002'],
+    [',mw2', 'weather-yahoo', '', '493-0005'],
+    [',mW', 'wikipedia-ja'],
+];
+EOM
+
+javascript <<EOM
+// observer_growl.js
+liberator.globalVariables.observer_growl_settings = {
+    'Hatelabo bottle': { life: 20, keyword: 'はてな', sticky: true },
+    'Weather forecast by Yahoo!': { sticky: true }
+};
+// subject_weather_yahoo.js
+liberator.globalVariables.subject_weather_yahoo_urls = [
+    'http://weather.yahoo.co.jp/weather/jp/23/5110/23203/4930005.html'
+];
+EOM
+
+" direct_bookmark.js
+javascript <<EOM
+liberator.globalVariables.direct_sbm_is_normalize = false;
+EOM
+
+" sbmcommentsviewer.js
+javascript <<EOM
+liberator.globalVariables.sbm_comments_viewer_filter_nocomments = true;
+EOM
+
+" google-plus-command
+let g:gplus_commando_map_next            = "j"
+let g:gplus_commando_map_prev            = "k"
+let g:gplus_commando_map_share           = "s"
+let g:gplus_commando_map_plusone         = "+"
+let g:gplus_commando_map_comment         = "c"
+let g:gplus_commando_map_post            = "C"
+let g:gplus_commando_map_yank            = "y"
+let g:gplus_commando_map_notification    = "n"
+let g:gplus_commando_map_submit          = "<C-CR>"
+let g:gplus_commando_map_cancel          = "<Esc>"
+let g:gplus_commando_map_unfold          = "e"
+let g:gplus_commando_map_mute            = "m"
+let g:gplus_commando_map_menu            = "M"
+let g:gplus_commando_map_open            = "o"
+" }}}
+
+" JavaScript {{{
+""""""""""""""""""""""""""""""""""""""""""
+" Show feed-button to statusbar
+" javascript <<EOM
+" (function () {
+" var feedPanel = document.createElement('statusbarpanel');
+" var feedButton = document.getElementById('feed-button');
+"     feedPanel.setAttribute('id','feed-panel-clone');
+"     feedPanel.appendChild(feedButton.cloneNode(true));
+"     feedButton.parentNode.removeChild(feedButton);
+"     document.getElementById('status-bar')
+"             .insertBefore(feedPanel,document.getElementById('security-button'));
+" })();
+" EOM
+" }}}
+
+
+" Abbreviations
+""""""""""""""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""""""""""""""
+source! ~/.vimperatorrc.local
+source! ~/.vimperatorrc.js
+
+echo "done"
+" vim: ft=vimperator sw=2 sts=2 fdm=marker
+

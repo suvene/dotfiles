@@ -1,0 +1,5 @@
+doc/tags*
+.netrwhist
+.DS_Store
+.zsh.d/packages/*
+
