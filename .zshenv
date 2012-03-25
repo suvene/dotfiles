@@ -177,9 +177,6 @@ if type gsed > /dev/null 2>&1; then
     alias sed=gsed
 fi
 
-[ -f ~/.zshenv.zeromemory.info ] && source ~/.zshenv.zeromemory.info
-[ -f ~/.zshenv.updoor.net ] && source ~/.zshenv.updoor.net
-[ -f ~/.zshenv.mba.local ] && source ~/.zshenv.mba.local
-[ -f ~/.zshenv.main.local ] && source ~/.zshenv.main.local
+[ -f ~/.zshenv.local ] && source ~/.zshenv.local
 
 

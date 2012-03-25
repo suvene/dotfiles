@@ -705,10 +705,7 @@ alias jw='cd ~/dev/wk/'
 ###############他の設定ファイルを読み込む################ {{{
 
 #文字コード、$PATH,$MANPATH,その他のエイリアスは分離
-[[ -f "$HOME/.zshrc.zeromemory.info" ]] && source "$HOME/.zshrc.zeromemory.info"
-[[ -f "$HOME/.zshrc.updoor.net" ]] && source "$HOME/.zshrc.updoor.net"
-[[ -f "$HOME/.zshrc.mba.local" ]] && source "$HOME/.zshrc.mba.local"
-[[ -f "$HOME/.zshrc.main.local" ]] && source "$HOME/.zshrc.main.local"
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"  # This loads RVM into a shell session.
 [[ -f "$HOME/.zsh.d/config/packages.zsh" ]] && source "$HOME/.zsh.d/config/packages.zsh"
 # }}}
