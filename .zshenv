@@ -32,6 +32,7 @@ path=(
   /usr/bin(N-/)
   /usr/games(N-/)
   /bin(N-/)
+  /usr/sbin(N-/)
   /sbin(N-/)
 )
 

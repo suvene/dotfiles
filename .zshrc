@@ -327,6 +327,9 @@ WORDCHARS=${WORDCHARS:s,/,,}
 ## 「|」も単語区切りとみなす。
 ## 2011-09-19
 WORDCHARS="${WORDCHARS}|"
+
+# 対話シェルでコメント有効化
+setopt interactive_comments
 # }}}
 
 ##############履歴と補完################ {{{
@@ -450,8 +453,8 @@ setopt mark_dirs
 # パッケージ管理(macとfreebsd)# {{{
 case "${OSTYPE}" in
 darwin*)
-    alias updateports="sudo port selfupdate; sudo port outdated"
-    alias portupgrade="sudo port upgrade installed"
+    alias updateports="sudo port -d selfupdate; sudo port -d sync; sudo port outdated"
+    alias portupgrade="sudo port -d upgrade installed"
     ;;
 freebsd*)
     case ${UID} in
@@ -592,7 +595,14 @@ esac
 # }}}
 
 # functions {{{
-findgrep() { find $1 -name "$2" -print0 | xargs -0 -e grep -nH -e "$3" }
+case "${OSTYPE}" in
+  darwin*)
+    findgrep() { find $1 -name "$2" -print0 | xargs -0 grep -nH -e "$3" }
+    ;;
+  *)
+    findgrep() { find $1 -name "$2" -print0 | xargs -0 -e grep -nH -e "$3" }
+    ;;
+esac
 
 # via. sudo.vimをzshから扱いやすくしたい | monoの開発ブログ http://blog.monoweb.info/article/2011120320.html# {{{
 sudo() {
@@ -680,6 +690,7 @@ alias -g W='| wc'
 alias -g S='| sed'
 alias -g A='| awk'
 alias -g W='| wc'
+alias -g E='2>&1 | tee -a'
 
 # base
 alias cp='cp -i'
@@ -693,19 +704,32 @@ alias sudo='sudo -E '
 alias s='sudo '
 alias su='su -l '
 
+# quick
+if type hub > /dev/null 2>&1; then
+    alias git=hub
+fi
 alias g='git'
 alias sg='sudo git'
+alias gn='git-now'
 
 # Jump
-alias jd='cd ~/dev/git/dotfiles/'
+alias jm='cd ~/memo'
+alias jd='cd ~/dev/git/prv/dotfiles/'
 alias jw='cd ~/dev/wk/'
+alias jg='cd ~/dev/git/'
+alias jh='cd ~/dev/github/'
 
+# tmux
+alias tmux='tmuxx'
+alias tm='tmuxx'
+alias tma='tmux attach'
+alias tml='tmux list-window'
 # }}}
 
 ###############他の設定ファイルを読み込む################ {{{
-
-#文字コード、$PATH,$MANPATH,その他のエイリアスは分離
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"  # This loads RVM into a shell session.
+[[ -s "$HOME/.pythonbrew/etc/bashrc" ]] && source "$HOME/.pythonbrew/etc/bashrc"
 [[ -f "$HOME/.zsh.d/config/packages.zsh" ]] && source "$HOME/.zsh.d/config/packages.zsh"
 # }}}
+

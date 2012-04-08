@@ -29,18 +29,28 @@
 [alias]
   br = branch
   co = checkout
+  com = checkout master
   ci = commit -a
   df = diff
-  lg = log -p
-  me = merge
+  lp = log -p
+  lg = log --graph --oneline --decorate --abbrev-commit
+  fe = fetch --prune
+  me = merge --no-ff
   st = status
   df2 = log -p HEAD@{2.days.ago}
   plr = pull --rebase
+[pull]
+	rebase = true
+# [diff]
+#   external = extDiff
+# [merge]
+#   tool = extMerge
+# [mergetool "extMerge"]
+#   cmd = extMerge "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
+#   trustExitCode = false
 [github]
   user = suVene
   token = --hidden-git-token--
-[pull]
-	rebase = true
 [tig "bind"]
   generic = g move-first-line
   generic = G move-last-line
