@@ -32,6 +32,7 @@
   com = checkout master
   ci = commit -a
   df = diff
+  dfs = diff --staged
   lp = log -p
   lg = log --graph --oneline --decorate --abbrev-commit
   fe = fetch --prune
